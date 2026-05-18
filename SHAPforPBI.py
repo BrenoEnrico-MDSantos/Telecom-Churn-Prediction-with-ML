@@ -1,34 +1,47 @@
-import pandas as pd
 import shap
+import pandas as pd
 
-# 1. Force the explainer to calculate in probability space natively
-# NOTE: Passing feature data (e.g., X_train or X_recently_joined) is required 
-# by SHAP when model_output="probability" to calculate conditional expectations.
-explainer = shap.TreeExplainer(model, data=X_recently_joined, model_output="probability")
-shap_values_obj = explainer(X_recently_joined)
+# 1. Amostragem do background para acelerar o cálculo intercional
+bg_sample = shap.sample(X_joined_enc, 200) if len(X_joined_enc) > 200 else X_joined_enc
 
-# 2. Extract raw features, SHAP values, and the base value
-# (The rest of your code works perfectly as written!)
-features_df = pd.DataFrame(X_recently_joined, columns=X_recently_joined.columns).reset_index(drop=True)
-shap_matrix = shap_values_obj.values 
+explainer = shap.TreeExplainer(
+    best_model, 
+    data=bg_sample, 
+    model_output="raw", 
+    feature_perturbation="interventional"
+)
 
-# 3. Create a DataFrame for the SHAP values with a 'shap_' prefix
-shap_df = pd.DataFrame(shap_matrix, columns=[f"shap_{col}" for col in features_df.columns])
+# 2. Cálculo dos valores SHAP
+shap_values_obj = explainer(X_joined_enc)
 
-# 4. Extract the base value
-if isinstance(shap_values_obj.base_values, (list, tuple, type(shap_matrix))):
-    base_values = shap_values_obj.base_values
+# 3. Extração e conversão para float32 (economiza 50% de memória)
+shap_matrix = shap_values_obj.values.astype('float32')
+
+# 4. Reaproveita o DataFrame existente evitando cópias
+features_df = X_joined_enc.reset_index(drop=True)
+
+# 5. Criação direta do DataFrame SHAP
+shap_cols = [f"shap_{col}" for col in features_df.columns]
+shap_df = pd.DataFrame(shap_matrix, columns=shap_cols)
+
+# 6. Extração otimizada do valor base (suporta escalar ou array)
+base_val = shap_values_obj.base_values
+if isinstance(base_val, (list, tuple, type(shap_matrix))) and len(base_val) == len(features_df):
+    base_values_col = base_val
 else:
-    base_values = [shap_values_obj.base_values] * len(features_df)
+    base_values_col = base_val[0] if hasattr(base_val, "__len__") else base_val
 
-meta_df = pd.DataFrame({
-    'Customer_ID': ids_recently_joined,  
-    'Churn_Prob': churn_probabilities,   
-    'shap_base_value': base_values
-}).reset_index(drop=True)
+# 7. Concatenação direta e eficiente
+final_export_df = pd.concat([
+    pd.Series(joined_df['Customer_ID'].values, name='Customer_ID'),
+    pd.Series(joined_df['Churn_Score'].values, name='Churn_Prob'),
+    pd.Series(base_values_col, name='shap_base_value', index=features_df.index),
+    features_df,
+    shap_df
+], axis=1)
 
-# 5. Concatenate everything horizontally
-final_export_df = pd.concat([meta_df, features_df, shap_df], axis=1)
+print(final_export_df.info())
+
 final_export_df.to_csv("pbi_operational_churn_data.csv", index=False)
 
 Once your table is imported into Power BI, create a Python Visual, drag your columns into its field bucket, and use this exact script. Because XGBoost models often deal with dozens of features, we will add max_display=10 to keep the chart clean, legible, and uncluttered for the marketing team:
