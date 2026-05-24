@@ -1,0 +1,42 @@
+Savvy Nomad (CRITICAL LOSS of greatest $$$)
+- Top tier consumers that hate long contracts, and have 0 tolerance;
+- If a One-Year bundle gets sneaked up, survivability flattens;
+- Two-Year might be a stretch, but with right bundles (and trust) it's possible;
+- Compell with top-notch quality and irresistible deals;
+- Act immediately, month 0 to 3 onboarding.
+
+Traditionalist (HIGH LOSS of customers and revenue + RLV)
+- Leans to One-Year and DSL, and utilities;
+- Focus on Value-Added Services (non-essentials, security, streaming);
+- Work towards Two-Year + VAS for maximum retention;
+- Campaign on month 6 (slip contract change) and 7-12.
+
+Niche Surfer (MODERATE LOSS, and smallest group)
+- Internet only, no phone; likes good net services;
+- Aside from bundling, prove service quality improvement;
+- Act on months 12 and 13-18, try a One-Year to Two-Year lock.
+
+Stable Bundler (LOW-MODERATE LOSS, greatest cust. count at risk)
+- Mainly landline user, quite tolerant;
+- Due to long survival, no reason to waste many bundles;
+- Auto messaging with slight discounts for longer contract will do (initially); 
+- Act from 18th month onward, and try Two-Year by month 18.
+
+Loyalist (NO RISK, for now)
+- Loves VAS content with the telco ecosystem;
+- Act with cross-selling for assuring survival and satisfaction;
+- Plan campaigns with partner releases and trends;
+- Locking in Two-Year should be easy.
+
+States
+- Looking at State data, Internet_Type and Payment_Method create friction in different degrees;
+- Where service operations are churn drivers, audits should be ran prior to bundling/deals. 
+- Fix operations in critical regions, then lock in longer contracts with quality services
+- Madhya Pradesh, Karnataka, and Maharashtra have countless Savvies; critical implementation of bundles 
+- Uttar Pradesh has a lot of Stable Bundlers; deal longer contracts and improve services to address
+
+! None of this accounts for Uplift analysis yet.
+- Only post-implementation, in a tailored Test/Control setting, may the behaviors be inferred.
+- Stable Bundlers and Tradionalists could surprise and hide many Sleeping Dogs; who knows...
+- Regardless, acting is obligatory for all states and most clusters, especially minding RLV
+- User activity, feedback and NPS, CAC and informed churn reasons must also be used to guide campaigns.
