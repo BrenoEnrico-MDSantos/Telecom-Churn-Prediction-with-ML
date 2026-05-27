@@ -1,117 +1,125 @@
-import shap
 import pandas as pd
+import numpy as np
 
-# 1. Amostragem do background para acelerar o cálculo intercional
-bg_sample = shap.sample(X_joined_enc, 200) if len(X_joined_enc) > 200 else X_joined_enc
+def processar_e_indexar_shap(df_clientes, df_shap, customer_id_col='Customer_ID'):
+    """
+    Une a base de clientes aos seus respectivos valores SHAP usando indexação 
+    do Pandas e prepara o dataset para consumo otimizado no Power BI.
+    """
+    # 1. Garantir que o ID do Cliente seja o índice em ambos os DataFrames para busca O(1)
+    df_clientes = df_clientes.set_index(customer_id_col)
+    df_shap = df_shap.set_index(customer_id_col)
+    
+    # 2. Identificar e renomear as colunas SHAP para evitar colisões
+    # Remove colunas de metadados se existirem no arquivo SHAP (ex: base_value se tratada separadamente)
+    shap_cols = df_shap.columns
+    df_shap_renamed = df_shap.rename(columns={col: f"shap_{col}" for col in shap_cols if not col.startswith('shap_')})
+    
+    # 3. Alinhamento e Junção via Índice (Inner join garante que apenas clientes com SHAP mapeado avancem)
+    df_final = df_clientes.join(df_shap_renamed, how='inner')
+    
+    # 4. Formatação de Performance para o Power BI
+    # Resetar o índice para que o Customer_ID volte a ser uma coluna comum utilizável em filtros/slicers
+    df_final = df_final.reset_index()
+    
+    return df_final
 
-explainer = shap.TreeExplainer(
-    best_model, 
-    data=bg_sample, 
-    model_output="raw", 
-    feature_perturbation="interventional"
-)
-
-# 2. Cálculo dos valores SHAP
-shap_values_obj = explainer(X_joined_enc)
-
-# 3. Extração e conversão para float32 (economiza 50% de memória)
-shap_matrix = shap_values_obj.values.astype('float32')
-
-# 4. Reaproveita o DataFrame existente evitando cópias
-features_df = X_joined_enc.reset_index(drop=True)
-
-# 5. Criação direta do DataFrame SHAP
-shap_cols = [f"shap_{col}" for col in features_df.columns]
-shap_df = pd.DataFrame(shap_matrix, columns=shap_cols)
-
-# 6. Extração otimizada do valor base (suporta escalar ou array)
-base_val = shap_values_obj.base_values
-if isinstance(base_val, (list, tuple, type(shap_matrix))) and len(base_val) == len(features_df):
-    base_values_col = base_val
-else:
-    base_values_col = base_val[0] if hasattr(base_val, "__len__") else base_val
-
-# 7. Concatenação direta e eficiente
-final_export_df = pd.concat([
-    pd.Series(joined_df['Customer_ID'].values, name='Customer_ID'),
-    pd.Series(joined_df['Churn_Score'].values, name='Churn_Prob'),
-    pd.Series(base_values_col, name='shap_base_value', index=features_df.index),
-    features_df,
-    shap_df
-], axis=1)
-
-print(final_export_df.info())
-
-final_export_df.to_csv("pbi_operational_churn_data.csv", index=False)
-
-Once your table is imported into Power BI, create a Python Visual, drag your columns into its field bucket, and use this exact script. Because XGBoost models often deal with dozens of features, we will add max_display=10 to keep the chart clean, legible, and uncluttered for the marketing team:
+# --- EXEMPLO DE EXECUÇÃO ---
+if __name__ == "__main__":
+    # Simulando dados brutos do CRM / Faturamento
+    dados_clientes = pd.DataFrame({
+        'Customer_ID': ['C101', 'C102', 'C103'],
+        'Idade': [34, 45, 23],
+        'Score_Credito': [710, 580, 690],
+        'Tempo_Contrato': [12, 24, 3]
+    })
+    
+    # Simulando a matriz SHAP exportada pelo modelo de Machine Learning
+    # Importante: O valor base (geralmente o log-odds médio ou a probabilidade média) deve ser incluído
+    dados_shap = pd.DataFrame({
+        'Customer_ID': ['C101', 'C102', 'C103'],
+        'Idade': [0.05, -0.12, 0.02],
+        'Score_Credito': [-0.22, 0.35, -0.05],
+        'Tempo_Contrato': [0.10, -0.08, 0.40],
+        'shap_base_value': [0.15, 0.15, 0.15] # Valor de referência global do modelo
+    })
+    
+    # Executa a indexação e união eficiente
+    dataset_pbi = processar_e_indexar_shap(dados_clientes, dados_shap)
+    
+    # Exporta para o CSV final que alimentará o Power BI de forma ultra leve
+    dataset_pbi.to_csv("mkt_churn_shap_ready.csv", index=False)
+    print("Dataset unificado e indexado com sucesso para o Power BI!")
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-import shap  # CORREÇÃO: Import em falta
+import shap
 
-if not dataset.empty:
-    # 1. Garante que pegamos apenas uma linha (ou a primeira filtrada no PBI)
+# 1. Trava de segurança: se o usuário selecionar múltiplos clientes na lista,
+# exibe uma mensagem amigável em vez de tentar calcular ou quebrar.
+if dataset.empty or dataset['Customer_ID'].nunique() > 1:
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    ax.text(0.5, 0.5, "Selecione um cliente na lista\npara ver os drivers de churn.", 
+            color='#666666', fontsize=12, weight='bold', ha='center', va='center')
+    ax.axis('off')
+    plt.show()
+    plt.close(fig)
+else:
+    # 2. Captura a linha do cliente selecionado
     row = dataset.iloc[0]
     
-    # 2. Mapeamento Dinâmico
+    # 3. Mapeamento dinâmico das colunas SHAP inseridas no visual
+    # Filtra as colunas que começam com 'shap_' vindas da tabela relacionada
     shap_names = [col for col in dataset.columns if col.startswith('shap_') and col != 'shap_base_value']
     feature_names = [col.replace('shap_', '') for col in shap_names]
     
-    feature_values = row[feature_names].values.astype(float)
-    shap_values = row[shap_names].values.astype(float)
+    # Se você trouxe as variáveis originais no dataset, mapeia os valores reais, senão deixa vazio
+    # Procurar a coluna original correspondente (ex: procura 'Idade' se o shap for 'shap_Idade')
+    feature_values = []
+    for f in feature_names:
+        if f in dataset.columns:
+            feature_values.append(row[f])
+        else:
+            feature_values.append(np.nan) # Caso não queira exibir o valor numérico bruto ao lado do nome
+            
+    shap_values = row[shap_names].values.astype('float32')
     base_value = float(row['shap_base_value'])
     
-    # 3. Reconstrói o objeto de explicação do SHAP
+    # 4. Reconstrói o objeto de explicação do SHAP
     exp = shap.Explanation(
         values=shap_values,
         base_values=base_value,
-        data=feature_values,
+        data=feature_values if any(not np.isnan(x) for x in feature_values) else None,
         feature_names=feature_names
     )
     
-    # 4. Configuração do Plot (SHAP gerencia a Figure internamente)
-    plt.figure(figsize=(7, 5))
+    # 5. Renderização controlada do Matplotlib
+    plt.rcParams['figure.dpi'] = 100
+    fig = plt.figure(figsize=(7, 4.5))
+    
     shap.waterfall_plot(exp, max_display=10, show=False)
-    ax = plt.gca() # Captura o eixo gerado pelo SHAP
+    ax = plt.gca()
     
-    # 5. Formatação de porcentagem no eixo X e rótulos
+    # Formata o eixo X para porcentagem
     ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0, decimals=0))
     
+    # Limpa e formata os rótulos de impacto (+15%, -8%, etc.)
     for text in ax.texts:
-        try:
-            # Limpa caracteres comuns gerados pelo SHAP waterfall
-            raw_text = text.get_text().replace('=', '').replace('+', '').replace('$', '').strip()
-            val = float(raw_text)
-            if -1.0 <= val <= 1.0 and val != 0:
-                prefix = "+" if val > 0 else ""
-                text.set_text(f"{prefix}{int(round(val * 100))}%")
-        except ValueError:
-            pass 
+        t_str = text.get_text()
+        if any(char in t_str for char in ['=', '+', '-']):
+            try:
+                cleaned = t_str.replace('=', '').replace('+', '').replace('$', '').strip()
+                val = float(cleaned)
+                if -1.0 <= val <= 1.0 and val != 0:
+                    prefix = "+" if val > 0 else ""
+                    text.set_text(f"{prefix}{int(round(val * 100))}%")
+            except ValueError:
+                pass
 
-    # 6. Polimento Visual
-    customer_id = row.get('Customer_ID', 'Desconhecido')
-    plt.title(f"Churn Drivers for Customer {customer_id}", fontsize=12, fontweight='bold', pad=15)
+    # 6. Título dinâmico baseado no cliente ativo
+    plt.title(f"Principais Fatores de Churn - Cliente: {row['Customer_ID']}", fontsize=11, fontweight='bold', pad=15)
     plt.tight_layout()
     
-    # 7. Exibição e Limpeza no Power BI
+    # 7. Exibe e limpa a memória imediatamente
     plt.show()
-    plt.close() # CORREÇÃO: Evita estouro de memória no PBI ON THE X-AXIS AND TEXT LABELS
-    # Convert x-axis ticks to percentages (e.g., 0.2 -> 20%)
-    ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0, decimals=0))
-    
-    # Find the text labels inside the chart (+/- impacts and numbers) and format them
-    for text in ax.texts:
-        try:
-            val = float(text.get_text().replace('=', '').replace('+', '').strip())
-            # If it's a small decimal value, turn it into an integer percentage string
-            if -1.0 <= val <= 1.0 and val != 0:
-                prefix = "+" if val > 0 else ""
-                text.set_text(f"{prefix}{int(round(val * 100))}%")
-        except ValueError:
-            pass # Skip labels that aren't numeric (like feature values)
-
-    # 6. Visual polish
-    plt.title(f"Churn Drivers for Customer {row['Customer_ID']}", fontsize=12, fontweight='bold', pad=15)
-    plt.tight_layout()
-    plt.show()
+    plt.close(fig)
