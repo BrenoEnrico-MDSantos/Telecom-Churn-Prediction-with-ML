@@ -48,20 +48,21 @@ Once your table is imported into Power BI, create a Python Visual, drag your col
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import shap  # CORREÇÃO: Import em falta
 
 if not dataset.empty:
-    # 1. Grab the single customer row
+    # 1. Garante que pegamos apenas uma linha (ou a primeira filtrada no PBI)
     row = dataset.iloc[0]
     
-    # 2. Dynamic Mapping (Matches raw features to their shap_ columns perfectly)
+    # 2. Mapeamento Dinâmico
     shap_names = [col for col in dataset.columns if col.startswith('shap_') and col != 'shap_base_value']
     feature_names = [col.replace('shap_', '') for col in shap_names]
     
-    feature_values = row[feature_names].values
-    shap_values = row[shap_names].values
-    base_value = row['shap_base_value']
+    feature_values = row[feature_names].values.astype(float)
+    shap_values = row[shap_names].values.astype(float)
+    base_value = float(row['shap_base_value'])
     
-    # 3. Rebuild the SHAP Explanation object
+    # 3. Reconstrói o objeto de explicação do SHAP
     exp = shap.Explanation(
         values=shap_values,
         base_values=base_value,
@@ -69,11 +70,33 @@ if not dataset.empty:
         feature_names=feature_names
     )
     
-    # 4. Generate the plot on an explicit Matplotlib Axis
-    fig, ax = plt.subplots(figsize=(7, 5))
+    # 4. Configuração do Plot (SHAP gerencia a Figure internamente)
+    plt.figure(figsize=(7, 5))
     shap.waterfall_plot(exp, max_display=10, show=False)
+    ax = plt.gca() # Captura o eixo gerado pelo SHAP
     
-    # 5. FORCE PERCENTAGE FORMATTING ON THE X-AXIS AND TEXT LABELS
+    # 5. Formatação de porcentagem no eixo X e rótulos
+    ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0, decimals=0))
+    
+    for text in ax.texts:
+        try:
+            # Limpa caracteres comuns gerados pelo SHAP waterfall
+            raw_text = text.get_text().replace('=', '').replace('+', '').replace('$', '').strip()
+            val = float(raw_text)
+            if -1.0 <= val <= 1.0 and val != 0:
+                prefix = "+" if val > 0 else ""
+                text.set_text(f"{prefix}{int(round(val * 100))}%")
+        except ValueError:
+            pass 
+
+    # 6. Polimento Visual
+    customer_id = row.get('Customer_ID', 'Desconhecido')
+    plt.title(f"Churn Drivers for Customer {customer_id}", fontsize=12, fontweight='bold', pad=15)
+    plt.tight_layout()
+    
+    # 7. Exibição e Limpeza no Power BI
+    plt.show()
+    plt.close() # CORREÇÃO: Evita estouro de memória no PBI ON THE X-AXIS AND TEXT LABELS
     # Convert x-axis ticks to percentages (e.g., 0.2 -> 20%)
     ax.xaxis.set_major_formatter(mtick.PercentFormatter(1.0, decimals=0))
     
