@@ -123,3 +123,42 @@ else:
     # 7. Exibe e limpa a memória imediatamente
     plt.show()
     plt.close(fig)
+
+# MUST UNPIVOT SHAP TABLE BEFORE 
+
+# 1. Create a base identifier dataframe
+id_df = pd.DataFrame({
+    'Customer_ID': joined_df['Customer_ID'].values,
+    'Churn_Prob': joined_df['Churn_Score'].values,
+    'shap_base_value': base_values_col
+})
+
+# 2. Add ID to features and melt (Wide -> Long)
+features_df['Customer_ID'] = id_df['Customer_ID']
+features_long = features_df.melt(
+    id_vars=['Customer_ID'], 
+    var_name='Feature_Name', 
+    value_name='Feature_Value'
+)
+
+# 3. Add ID to SHAP values and melt (Wide -> Long)
+# Strip the 'shap_' prefix during melt so the feature names match exactly
+shap_df['Customer_ID'] = id_df['Customer_ID']
+shap_long = shap_df.melt(
+    id_vars=['Customer_ID'], 
+    var_name='Feature_Name', 
+    value_name='SHAP_Value'
+)
+shap_long['Feature_Name'] = shap_long['Feature_Name'].str.replace('shap_', '', regex=False)
+
+# 4. Merge the long dataframes together
+long_features_merged = pd.merge(
+    features_long, 
+    shap_long, 
+    on=['Customer_ID', 'Feature_Name']
+)
+
+# 5. Bring back the global metrics (Churn_Prob and Base Value)
+final_export_df = pd.merge(id_df, long_features_merged, on='Customer_ID')
+
+print(f'⌛ Long-format table created in {round(time.time() - start,2)} secs!')
