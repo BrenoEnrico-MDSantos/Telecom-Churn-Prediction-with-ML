@@ -3,7 +3,7 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 
 ## Table of contents
 - [Chapter Holder](#chapter-holder)
-- [To use K-Medoids](#to_use_k-medoids)
+- [To use K-Medoids](#:ringed_planet:_to_use_k-medoids)
 
 ### Chapter Holder
 
