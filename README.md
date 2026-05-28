@@ -5,7 +5,31 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 - [Chapter Holder](#chapter-holder)
 - [To use K-Medoids](#:ringed_planet:_to_use_k-medoids)
 
-### Chapter Holder
+### Key CRM info
+- The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
+-  The formula for ```Total Revenue``` (total past revenue thus far) is: ```Total_Revenue = (Total_Charges + Total_Long_Distance_Charges + Total_Extra_Data_Charges) - Total_Refunds```. As such, for readability, the column **Monthly_Avg** was made from ```Total_Revenue / Tenure_in_Months```, to represent an understandable approximation of customer financial value.   
+- By grouping with clusters made with **Contract, Tenure, Revenue and Internet Type**, actionable routes for prioritizing campaigns can be divised, without excessive cost or high risk of mistaken allocation;
+- An *Uplift* analysis could very well be implemented further on, but simulating A/B testing and weighted reactions to different campaigns excels the scope of this Churn Prediction project.
+- ```Value_Deal``` appears to identify customers that already were subject to some bundle or campaign; since I have no access to the cost of each contract and/or services, the referred column was ignored in the analysis, also for it's composition (only 2870 non-nulls). So, this column is seen in the operational dashboard, as customer info.
+- The means of ```Number_of_Referrals``` by clusters are too homogenous; same treatment as Value_Deal.
+- **Value-Added Services (VAS)** play a major role in this project and in real industry practice, hence all of them were considered to determine behavioral diffs and improvement points, even for states.
+- All **status-related columns** hold crucial data, but ```Churn_Category``` and ```Churn_Reason``` have too many nulls; same treatment as Value_Deal, but those cols might aid in regional tailoring.
+
+| Dimension Type | Columns |
+|---|---|
+| Profile | ```'Customer_ID', 'Gender', 'Age', 'Married', 'State', 'Number_of_Referrals', 'Tenure_in_Months', 'Value_Deal', 'Payment_Method', 'Paperless_Billing'``` |
+| Core Services | ```'Phone_Service', 'Multiple_Lines', 'Internet_Service', 'Internet_Type'``` |
+| VAS | ```'Online_Security', 'Online_Backup', 'Device_Protection_Plan', 'Premium_Support', 'Streaming_TV', 'Streaming_Movies', 'Streaming_Music', 'Unlimited_Data'``` |
+| Financial | ```'Monthly_Charge', 'Total_Charges', 'Total_Refunds', 'Total_Extra_Data_Charges', 'Total_Long_Distance_Charges', 'Total_Revenue'``` |
+| Status & Churn | ```'Customer_Status', 'Churn_Category', 'Churn_Reason'``` |
+
+- In the final cust. table (Churn + Stayed + predicted Joined), these new columns are present:
+|---|---|
+| New Cols | ```'Age_Range', 'Tenure_Range', 'RLV', 'Predicted  ``` |
+
+> [!NOTE]
+> The original table has no **cost** info, rendering impossible to calculate metrics such as standard **Customer Lifetime Value, Cost of Acquisition, Return Over Investment** and other indicators that in a real scenario back up interventions. *"Wins"* tracking can *somewhat* be deduced by the amount of recently Joined customers, but again, table integration would be needed for precise calculations.
+> Nonetheless, with the available data, it is already possible to detect distinct patterns, groups, regional preferences and moment to act.
 
 ## :ringed_planet: To use K-Medoids
 - The library ```scikit-learn-extra``` is available only in **python <= 3.11**. Use a custom venv as kernel for projects, and install libraries with ```%p``` (due to compatibility, ```%pip install "numpy<2"```)
