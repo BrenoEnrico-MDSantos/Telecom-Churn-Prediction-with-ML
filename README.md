@@ -1,6 +1,11 @@
 # Telecom Churn Prediction with ML
 Churner prediction using binary classifiers in python, alongside PowerBI for report and A/B testing.
 
+## Table of contents
+* [Chapter Holder](#chapter-holder)
+
+### Chapter Holder
+
 ## :ringed_planet: To use K-Medoids
 - The library ```scikit-learn-extra``` is available only in **python <= 3.11**. Use a custom venv as kernel for projects, and install libraries with ```%p``` (due to compatibility, ```%pip install "numpy<2"```)
 - Check all versions installed at CMD with ```py -0``` (asterisk marks the current)
