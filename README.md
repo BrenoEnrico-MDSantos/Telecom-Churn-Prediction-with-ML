@@ -2,7 +2,8 @@
 Churner prediction using binary classifiers in python, alongside PowerBI for report and A/B testing.
 
 ## Table of contents
-* [Chapter Holder](#chapter-holder)
+- [Chapter Holder](#chapter-holder)
+- [To use K-Medoids](#to_use_k-medoids)
 
 ### Chapter Holder
 
