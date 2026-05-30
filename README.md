@@ -5,7 +5,7 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 - [Chapter Holder](#chapter-holder)
 - [To use K-Medoids](#:ringed_planet:_to_use_k-medoids)
 
-### Key CRM info
+### Key info
 - The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
 -  The formula for ```Total Revenue``` (total past revenue thus far) is: ```Total_Revenue = (Total_Charges + Total_Long_Distance_Charges + Total_Extra_Data_Charges) - Total_Refunds```. As such, for readability, the column **Monthly_Avg** was made from ```Total_Revenue / Tenure_in_Months```, to represent an understandable approximation of customer financial value.   
 - By grouping with clusters made with **Contract, Tenure, Revenue and Internet Type**, actionable routes for prioritizing campaigns can be divised, without excessive cost or high risk of mistaken allocation;
@@ -24,8 +24,16 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 | Status & Churn | ```'Customer_Status', 'Churn_Category', 'Churn_Reason'``` |
 
 - In the final cust. table (Churn + Stayed + predicted Joined), these new columns are present:
-|---|---|
-| New Cols | ```'Age_Range', 'Tenure_Range', 'RLV', 'Predicted  ``` |
+
+| New Columns |
+| --- |
+| ```'Clusters', 'Age_Range', 'Tenure_Range', 'RLV', 'Predicted'  ``` |
+
+| Cluster | Profile | Action | Churn Risk | Value | Regional Priority |
+|---|---|---|---|---|---|
+| *Loyalist* | Fiber-heavy who trusts and expects quality + VAS; strong survivability and highest ARPU point a **massive long-term RLV**; younger public **(20-40s)**| *Gamification* of contract (discount by tenure, reward feedback giving); stretch longer contract lock w/ premium bundling; focus on expanding this profile across states and ages. | Low | High | Grow on southern states (e.g. *Tamil Nadu, Kerala, Karnataka*) |
+| *Minimalist* | Older **off-line** public; no fluff; long contracts, expect phone calls to work; lowest ARPU, RLV falls from 6th month onwards; high survivability  | Cost-efficient maintenance; warrant reliability on phone services and land support; slow transition into basic internet infrastructure, and bundle with family incetives; ensure means for physical payment while nudging towards paperless, and keep the recently joined in. | High | Low | Critical at *Uttar Pradesh, Telangana, Assam* |
+| *Nomad* | Largest customer count and revenue sum; comprises most ages, especially 40-70s; **squishy** (Month-to-Month); appreciates VAS; massive base and promising ARPU make for RLV priority | Onboarding on early tenure (0-3 months), and diplomatic **One-Year contract lock** w/ incetives; | High | High | Immediate act in *Jammu & Kashmir, Uttar Pradesh, Telangana and Bihar*; rework VIP plan rework and dedicated client support team |
 
 > [!NOTE]
 > The original table has no **cost** info, rendering impossible to calculate metrics such as standard **Customer Lifetime Value, Cost of Acquisition, Return Over Investment** and other indicators that in a real scenario back up interventions. *"Wins"* tracking can *somewhat* be deduced by the amount of recently Joined customers, but again, table integration would be needed for precise calculations.
