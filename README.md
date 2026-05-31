@@ -2,8 +2,8 @@
 Churner prediction using binary classifiers in python, alongside PowerBI for report and A/B testing.
 
 ## Table of contents
-- [Chapter Holder](#chapter-holder)
-- [To use K-Medoids](#:ringed_planet:_to_use_k-medoids)
+1. [Key Info](#key-info)
+2. [Cluster Profiling](#cluster-profiling)
 
 ### Key info
 - The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
@@ -29,11 +29,13 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 | --- |
 | ```'Clusters', 'Age_Range', 'Tenure_Range', 'RLV', 'Predicted'  ``` |
 
+### Cluster Profiling
+
 | No. | Cluster | Profile | Action | Churn Risk (L/M/H) | Value (L/M/H) | Regional Priority |
 |---|---|---|---|---|---|---|
 | 1 | *Loyalist* | Fiber-heavy who trusts and expects quality + VAS; strong survivability and highest ARPU point a **massive long-term RLV**; younger public **(20-40s)**| *Gamification* of contract (discount by tenure, reward feedback giving); stretch longer contract lock w/ premium bundling; focus on expanding this profile across states and ages. | 🟢 L | 🟢 H | Grow on southern states (e.g. *Tamil Nadu, Kerala, Karnataka*) |
 | 2 | *Minimalist* | Older, **off-line** public; no fluff; long contracts, expect phone calls to work; lowest ARPU, RLV falls from 6th month onwards; high survivability  | Cost-efficient maintenance; warrant reliability on phone services and land support; slow transition into basic internet infrastructure, and bundle with family incetives; ensure means for physical payment while nudging towards paperless, and keep the recently joined in | 🔴 H | 🔴 L | Critical at *Uttar Pradesh, Telangana, Assam* |
-| 3 | *Savvy Nomad* | Largest customer count and revenue sum; comprises most ages, especially 40-70s; **squishy** (Month-to-Month); appreciates VAS; massive base and promising ARPU make for RLV priority, but got the worst surivavl curve | Crucial onboarding on early tenure (0-3 months), and diplomatic **One-Year contract lock** w/ incetives; MKT efforts to avoid rival *poaching*; emphasize Quality of Life add-ons | 🔴 H | 🟢 H | Immediate act in *Jammu & Kashmir, Uttar Pradesh, Telangana, Bihar and Maharashtra*; rework VIP plans and mobilize client support teams. Due to cluster size, tailored age-related approaches are wise |
+| 3 | *Savvy Nomad* | Largest customer count and revenue sum; comprises most ages, especially 40-70s; **squishy** (Month-to-Month); appreciates VAS; massive base and promising ARPU make for RLV priority, but got the worst surivavl curve | Crucial onboarding on early tenure (0-3 months), and diplomatic **One-Year contract lock** w/ incetives; MKT efforts to avoid rival *poaching*; emphasize Quality of Life add-ons | 🔴 H | 🟢 H | Immediate act in *Jammu & Kashmir, Uttar Pradesh, Telangana, Bihar and Maharashtra*; rework VIP plans and mobilize client support teams. Due to cluster size, tailored age-related approaches are needed |
 | 4 | *Steady Surfer* | Dislikes phone services, and likes some on-line VAS; more mature public (40-60s; stable survivability, low-mid ARPU and mid RLV; second largest sum of revenue, worth treating | If costs allow, try phone upsell; **professional life** MKT approaches; gradual migration to Fiber Optic | 🟡 M | 🟡 M | Implement bundling and improve/fix DSL in *Tamil Nadu, Kerala, Karnataka, Maharashtra*; consider appealing "stay-bonuses" for *Nomad* and *Surfer* clusters |
 | 5 | *Zen Tech* | Cable prerefence; seeks peace of mind with **security add-ons**; survivalibilty concern second only to *Nomad*'s ; small current slice for total revenue; mid RLV and ARPU; another mid group, small priority | Bundle other VAS with highlighted security upsides, and fix potential flaws in provided plans; slowly work phone provision; Fiber probably isn't worth the cost | 🟡 M | 🔴 L | *Maharashtra, Punjab, Bihar Andhra Pradesh, Madhya Pradesh* |
 
