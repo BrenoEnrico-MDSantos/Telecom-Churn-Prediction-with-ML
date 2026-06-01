@@ -162,3 +162,47 @@ long_features_merged = pd.merge(
 final_export_df = pd.merge(id_df, long_features_merged, on='Customer_ID')
 
 print(f'⌛ Long-format table created in {round(time.time() - start,2)} secs!')
+
+import pandas as pd
+import numpy as np
+
+def preparar_shap_para_pbi(df_shap, customer_id_col='Customer_ID'):
+    """
+    Transforma a tabela SHAP em formato longo (Long/Tall) mantendo apenas o ID.
+    O relacionamento com a tabela de clientes será feito nativamente no Power BI.
+    """
+    # 1. Garantir que o ID do Cliente seja o índice temporariamente para o processo
+    df_shap = df_shap.set_index(customer_id_col)
+    
+    # 2. Isolar o Base Value / Expected Value (se houver)
+    base_val_col = [col for col in df_shap.columns if 'base' in col.lower() or 'expected' in col.lower()]
+    
+    # Se houver coluna de base_value, salvaremos ela para não misturar com as features normais
+    df_shap_features = df_shap.drop(columns=base_val_col) if base_val_col else df_shap.copy()
+    
+    # 3. Transformar de Largo (Wide) para Longo (Long) mantendo apenas o ID do cliente
+    # Como df_shap_features tem apenas valores SHAP, derretemos todas as colunas restantes
+    df_long = df_shap_features.reset_index().melt(
+        id_vars=[customer_id_col],
+        value_vars=list(df_shap_features.columns),
+        var_name='Feature_Name',
+        value_name='SHAP_Value'
+    )
+    
+    # 4. Tratar o Base Value (Opcional, mas altamente recomendado para o Gráfico de Cascata)
+    # Se a coluna base_value existia, adicionamos ela como se fosse uma feature para fechar a conta do gráfico
+    if base_val_col:
+        df_base = df_shap[base_val_col].reset_index()
+        df_base_long = df_base.melt(
+            id_vars=[customer_id_col],
+            var_name='Feature_Name',
+            value_name='SHAP_Value'
+        )
+        # Força o nome a ser amigável no Power BI
+        df_base_long['Feature_Name'] = 'Base Value (E[f(X)])'
+        df_long = pd.concat([df_long, df_base_long], ignore_index=True)
+        
+    return df_long
+
+# O Power BI lerá este DataFrame final estruturado
+fato_shap_pbi = preparar_shap_para_pbi(df_shap)
