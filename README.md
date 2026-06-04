@@ -4,7 +4,7 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 ## Table of contents
 1. [Key Info](#key-info)
 2. [Cluster Profiling](#cluster-profiling)
-
+![Project workflow](https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/Workflow.png)
 ### Key info
 - The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
 -  The formula for ```Total Revenue``` (total past revenue thus far) is: ```Total_Revenue = (Total_Charges + Total_Long_Distance_Charges + Total_Extra_Data_Charges) - Total_Refunds```. As such, for readability, the column **Monthly_Avg** was made from ```Total_Revenue / Tenure_in_Months```, to represent an understandable approximation of customer financial value.   
