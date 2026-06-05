@@ -5,6 +5,28 @@ Churner prediction using binary classifiers in python, alongside PowerBI for rep
 1. [Key Info](#key-info)
 2. [Cluster Profiling](#cluster-profiling)
 ![Project workflow](https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/Workflow.png)
+
+<div align="center">
+  <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/Workflow.png" alt="Project workflow" />
+  <p style="font-size:10px; color:gray;"><em>Figure 1: Workflow of the project</em></p>
+</div>
+
+<div align="center">
+    <h3>Figure Set 1: Project Diagrams</h3>
+</div>
+
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px;">
+  <div style="flex:0 0 auto; text-align:center;">
+    <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/RCLV.png" alt="RCLV" width="250"/>
+    <p style="font-size:12px; color:gray;"><em>RCLV</em></p>
+  </div>
+  <div style="flex:0 0 auto; text-align:center;">
+    <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/KMF.png" alt="KMF" width="250"/>
+    <p style="font-size:12px; color:gray;"><em>KMF</em></p>
+  </di>
+</div>
+
+
 ### Key info
 - The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
 -  The formula for ```Total Revenue``` (total past revenue thus far) is: ```Total_Revenue = (Total_Charges + Total_Long_Distance_Charges + Total_Extra_Data_Charges) - Total_Refunds```. As such, for readability, the column **Monthly_Avg** was made from ```Total_Revenue / Tenure_in_Months```, to represent an understandable approximation of customer financial value.   
