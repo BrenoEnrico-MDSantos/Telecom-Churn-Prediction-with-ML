@@ -1,5 +1,17 @@
-# Telecom Churn Prediction with ML
+# Telecom Churn Prediction with ML + AI
 Churner prediction using binary classifiers in python, alongside PowerBI for report and A/B testing.
+
+<div align="center">
+  <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/TarangTel full.png" alt="TarangTel" />
+  <p style="font-size:10px; color:gray;"><em>Meet TarangTel, and it's CRM worries</em></p>
+</div>
+
+## Background
+  *TarangTel* <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/TarangTel_icon.png" alt="logo" width="20" style="vertical-align:middle;"> is a made-up **telecommunication company**, aiming to provide India with quality Phone, Internet and Streaming services. Due to yet uncertain reasons, the clientelle is churning heavily across all states, and chunks of current and potential revenue are being lost by the month. The recently joined customers are in high risk, and analysis were issued to provide direction to the Marketing and Provision team. As such, a diverse subset of clients was provided to foster data-driven decision making, leveraging **Machine Learning concepts and algorithms** alongside **industry-expert AI** to cook modern, efficient solutions to the churn problem.
+
+  The divised steps were: segment the customers into actionable **clusters**, find improvement points for **core and Value Added services**, narrow down **which segments, and which states demand urgency** (not only crying over spilled revenue), and brainstorm interventions, such as service fixes, bundling, or age-specific campaigns to enhance our operations and show subscribers that we care and know.
+
+*Will data aid TarangTel in it's predicament?*
 
 ## Table of contents
 1. [Key Info](#key-info)
