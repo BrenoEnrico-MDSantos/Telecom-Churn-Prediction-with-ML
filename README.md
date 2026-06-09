@@ -121,9 +121,9 @@ Uplift posting: [here](https://cmr.berkeley.edu/2025/11/to-treat-or-not-to-treat
 ### Technical Choices
 |Tech|Why?|
 |--|--|
-| StandardScaler | After dealing with outliers in numerical data (Tukey Method + median replacement), any geometrical algorithm (PCA, MCA, **Factor Analysis for Mixed Data**) expects variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points.
-| FAMD | |
-| K-Medoids | |
+| StandardScaler | After dealing with outliers in numerical data (Tukey Method + median replacement), any geometrical algorithm (PCA, MCA, **Factorial Analysis of Mixed Data**) expects variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points.
+| FAMD | **PCA** is applied for categorical types; **MCA** for continuous types; with balanced inertia points, the hybrid matrix of FAMD solves metric incompatibility and prevents type bias. |
+| K-Medoids | Introducing FAMD principal coordinates into **Euclidean** K-Medoids, mixed types are natively computed and each *k*'s medoid will be an actual data point, unlike **K-Means, K-Modes** and **K-Prototypes**. For bigger datasets, however, $O(n²)$/quadratic complexity is unviable, thus lower cost (such as $O(n)$/linear) tools are needed for scalability. |
 
 ## AI for Cluster Analysis:
 These prints were passed for Gemini, which acted as a market expert and suggested labels for each created segment; the **Chain of Thought** was:
