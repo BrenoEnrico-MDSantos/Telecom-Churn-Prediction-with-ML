@@ -19,7 +19,6 @@ Churn prediction and intervention with python, Copilot + Gemini and PowerBI
 ## Table of contents
 1. [Key Info](#key-info)
 2. [Cluster Profiling](#cluster-profiling)
-![Project workflow](https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/Workflow.png)
 
 <div align="center">
   <img src="https://github.com/BrenoEnrico-MDSantos/Telecom-Churn-Prediction-with-ML/blob/main/img/Workflow.png" alt="Project workflow" />
@@ -40,7 +39,6 @@ Churn prediction and intervention with python, Copilot + Gemini and PowerBI
     <p style="font-size:12px; color:gray;"><em>KMF</em></p>
   </di>
 </div>
-
 
 ### Key info
 - The original table has **6418 rows, and 32 columns**; the features used to segment clusters + analyse survivability curves were treated and scaled to achieve valuable results (**5 clusters**, and good Churn Scoring).
