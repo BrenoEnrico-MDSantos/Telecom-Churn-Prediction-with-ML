@@ -118,6 +118,13 @@ Uplift posting: [here](https://cmr.berkeley.edu/2025/11/to-treat-or-not-to-treat
     -  Calculation of Uplift and profiling to assess feasibility of interventions;
 5. PBI Dashboards for churn situation, clusters, states and campaign predictions.   
 
+### Technical Choices
+|Tech|Why?|
+|--|--|
+| StandardScaler | After dealing with outliers in numerical data (Tukey Method + median replacement), any geometrical algorithm (PCA, MCA, **Factor Analysis for Mixed Data**) expects variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points.
+| FAMD | |
+| K-Medoids | |
+
 ## AI for Cluster Analysis:
 These prints were passed for Gemini, which acted as a market expert and suggested labels for each created segment; the **Chain of Thought** was:
 > _"Act as a Telecom market expert. Analyze these cluster preferences, distribution, survivability curves and Residual CLV runways. Brainstorm at least 3 names for each of the segments applying domain knowledge, and suggest measures for customer retention, prioritizing those at highest risk. Let's think this step by step."_
