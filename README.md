@@ -74,7 +74,6 @@ Churn prediction and intervention with python, Copilot + Gemini and PowerBI
 | 4 | *Steady Surfer* | Dislikes phone services, and likes some on-line VAS; more mature public (40-60s; stable survivability, low-mid ARPU and mid RLV; second largest sum of revenue, worth treating | If costs allow, try phone upsell; **professional life** MKT approaches; gradual migration to Fiber Optic | 🟡 M | 🟡 M | Implement bundling and improve/fix DSL in *Tamil Nadu, Kerala, Karnataka, Maharashtra*; consider appealing "stay-bonuses" for *Nomad* and *Surfer* clusters |
 | 5 | *Zen Tech* | Cable prerefence; seeks peace of mind with **security add-ons**; survivalibilty concern second only to *Nomad*'s ; small current slice for total revenue; mid RLV and ARPU; another mid group, small priority | Bundle other VAS with highlighted security upsides, and fix potential flaws in provided plans; slowly work phone provision; Fiber probably isn't worth the cost | 🟡 M | 🔴 L | *Maharashtra, Punjab, Bihar Andhra Pradesh, Madhya Pradesh* |
 
-> [!NOTE]
 > The original table has no **cost** info, rendering impossible to calculate metrics such as standard **Customer Lifetime Value, Cost of Acquisition, Return Over Investment** and other indicators that in a real scenario back up interventions. *"Wins"* tracking can *somewhat* be deduced by the amount of recently Joined customers, but again, table integration would be needed for precise calculations.
 > Nonetheless, with the available data, it is already possible to detect distinct patterns, groups, regional preferences and moment to act.
 
@@ -89,40 +88,13 @@ Churn prediction and intervention with python, Copilot + Gemini and PowerBI
 - Open JupyterLab: ```jupyter lab``` or [URL](http://localhost:8888/lab?token=04f81664309fa076b10351753c52ec47dd26265eca202945)
 - Create the project with new kernel _Python 3.11 (KMedoids)_. Remember to use ```%pip install```
 
-Uplift posting: [here](https://cmr.berkeley.edu/2025/11/to-treat-or-not-to-treat-five-lessons-learned-from-using-uplift-modeling-to-optimize-marketing-campaigns/)
-
-# Steps
-1. Extract -> Load -> Transform:
-    - Understand columns for each tool, and create an average for direct monetary reading; 
-    - Outlier detection and dealing with Tukey method;
-    - Standardize numerical data with StandardScaler for FAMD;
-2. Customer Clustering and Profiling:
-    - FAMD coordinates with high explainability components fed on KMedoids model;
-    - Cluster distribution and means/modes display;
-    - Survivability curves with Kaplan-Meier Fitter;
-    - Laplace Smoothed Odds Ratio + Lift for cluster prominent traits;
-    - Labeling and expert domain strategy with AI;
-        -  'State' table with top drivers
-        - CLV and Residual CLV calculations (profiles based on heatmap)
-3. Churn Prediction for Recently Joined:
-    - Weight of Evidence calculations for event of churn;
-    - COX PH Hazard Ratios with relevant Information Value columns;
-    - XGBoost + Optuna with unscaled numericals and WOEEncoded categoricals;
-        - SHAP values for feature understanding;
-    - 'Joined' status customers churn profiling with optimal threshold;
-        - Custom function for individual cases with SHAP waterfall
-4. Uplift Analysis on customers at risk:
-    - A/B groups (simulated intervention and response across clusters);
-    - The predicted churn labeling becomes the target for WOEEncoder;
-    - Uplift must be paired with Residual CLV for even stronger priority 
-    -  Calculation of Uplift and profiling to assess feasibility of interventions;
-5. PBI Dashboards for churn situation, clusters, states and campaign predictions.   
+Uplift posting [here](https://cmr.berkeley.edu/2025/11/to-treat-or-not-to-treat-five-lessons-learned-from-using-uplift-modeling-to-optimize-marketing-campaigns/)
 
 ### Technical Choices
 | Tech | *Why?* |
 |--|--|
-| StandardScaler | After dealing with outliers in numerical data (Tukey Method + median replacement), any geometrical algorithm (PCA, MCA, **Factorial Analysis of Mixed Data**) expects variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points.
-| FAMD | **PCA** is applied for categorical types; **MCA** for continuous types; with balanced inertia points, the hybrid matrix of FAMD solves metric incompatibility and prevents type bias. |
+| ```StandardScaler``` | After dealing with outliers in numerical data ([IQR/Tukey's Fence Method](https://profkelley.github.io/IQR-Tukeys-Method/) + median replacement), any geometrical algorithm (PCA, MCA, **Factorial Analysis of Mixed Data**) expects a variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points. |
+| FAMD | **PCA** is applied for categorical types; **MCA** for continuous types; with balanced inertia points, the hybrid matrix of FAMD solves metric incompatibility and prevents type bias. So, FAMD sandwiches both data types into a matrix, then values  and all dimensions |
 | K-Medoids | Introducing FAMD principal coordinates into **Euclidean** K-Medoids, mixed types are natively computed and each *k*'s medoid will be an actual data point, unlike **K-Means, K-Modes** and **K-Prototypes**. For bigger datasets, however, $O(n²)$ (quadratic complexity) is unviable, thus lower cost (such as $O(n)$ (linear) tools are needed for scalability. |
 | Laplace Smoothed Log Odds Ratio | ***Odds Ratio*** (OR) calculates the probability of a value in the observed subset (Odds) comparing to a control group. ***Log*** is applied to standardize OR to a symmetrical scale, and a constant of 1 (***Laplace Smoothing***) is added to filter irrelevant noise caused by small sampling. ***Lift*** is finally used to visualize observed frequency by expected global mean (e.g. ```Internet_Type: DSL, Lift: 8.1``` = 8.1x more presence of such value when compared to other groups). So, Log Odds Ratio with an added constant means % only for relevant observed events/values; Lift is the multiplicative "translation" to order frequencies and help in acting/profiling |
 | COX PH | The [Cox Proportional Hazards model](https://www.sthda.com/english/wiki/cox-proportional-hazards-model)... |
