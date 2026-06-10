@@ -119,12 +119,13 @@ Uplift posting: [here](https://cmr.berkeley.edu/2025/11/to-treat-or-not-to-treat
 5. PBI Dashboards for churn situation, clusters, states and campaign predictions.   
 
 ### Technical Choices
-|Tech|Why?|
+| Tech | *Why?* |
 |--|--|
 | StandardScaler | After dealing with outliers in numerical data (Tukey Method + median replacement), any geometrical algorithm (PCA, MCA, **Factorial Analysis of Mixed Data**) expects variance of 1.0; [MinMax and Robust](https://machinelearningmastery.com/minmax-vs-standard-vs-robust-scaler-which-one-wins-for-skewed-data/) squash variances, therefore importance of data points.
 | FAMD | **PCA** is applied for categorical types; **MCA** for continuous types; with balanced inertia points, the hybrid matrix of FAMD solves metric incompatibility and prevents type bias. |
 | K-Medoids | Introducing FAMD principal coordinates into **Euclidean** K-Medoids, mixed types are natively computed and each *k*'s medoid will be an actual data point, unlike **K-Means, K-Modes** and **K-Prototypes**. For bigger datasets, however, $O(n²)$ (quadratic complexity) is unviable, thus lower cost (such as $O(n)$ (linear) tools are needed for scalability. |
-| Laplace Smoothed Log Odds Ratio | ***Odds Ratio*** yields the probability occurance of a value in the observed subset comparing to a control group (% event/% no event). ***Log*** is applied to the Odds for a standardized symmetrical scale, and a constant of 1 (***Laplace Smoothing***) is added to filter irrelevant noise caused by small sampling. ***Lift*** is finally used to visualize observed frequency by expected global mean (e.g. ```Internet_Type: DSL, Lift: 8.1``` = 8.1x more presence of such value when compared to other groups). So, Log Odds Ratio with an added constant means filtered % for observed events/values; Lift is the "translation" to order frequencies and help in acting/profiling |
+| Laplace Smoothed Log Odds Ratio | ***Odds Ratio*** (OR) calculates the probability of a value in the observed subset (Odds) comparing to a control group. ***Log*** is applied to standardize OR to a symmetrical scale, and a constant of 1 (***Laplace Smoothing***) is added to filter irrelevant noise caused by small sampling. ***Lift*** is finally used to visualize observed frequency by expected global mean (e.g. ```Internet_Type: DSL, Lift: 8.1``` = 8.1x more presence of such value when compared to other groups). So, Log Odds Ratio with an added constant means % only for relevant observed events/values; Lift is the multiplicative "translation" to order frequencies and help in acting/profiling |
+| COX PH | The [Cox Proportional Hazards model](https://www.sthda.com/english/wiki/cox-proportional-hazards-model)... |
 
 
 ## AI for Cluster Analysis:
